@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Stress Testing Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced Stress Testing Tool</h1>
+        <form id="stressForm">
+            <label for="target">Target (IP or URL):</label>
+            <input type="text" id="target" name="target" required>
+            <label for="targetPort">Target Port (optional):</label>
+            <input type="number" id="targetPort" name="targetPort">
+            <label for="duration">Duration (seconds):</label>
+            <input type="number" id="duration" name="duration" required>
+            <label for="attackType">Attack Type:</label>
+            <select id="attackType" name="attackType" required>
+                <option value="http">HTTP Flood</option>
+                <option value="udp">UDP Flood</option>
+                <option value="tcp">TCP Flood</option>
+            </select>
+            <button type="submit">Start Stress Test</button>
+        </form>
+        <div id="output"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
