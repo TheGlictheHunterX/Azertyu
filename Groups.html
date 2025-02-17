@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: #1c1c1c;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #222;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .message span {
+            font-weight: bold;
+            color: red;
+        }
+        .message p {
+            display: inline;
+            color: blue;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background: #333;
+        }
+        input, button {
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        input {
+            flex: 1;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            margin-left: 5px;
+            border-radius: 5px;
+        }
+        .back-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .back-btn:hover {
+            background: #cc0000;
+        }
+        .group-list {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 20px;
+            background: #1c1c1c;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .group {
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="group-list" id="group-list">
+        <h3 style="color:white; text-align:center;">Available Groups</h3>
+        <div id="groups"></div>
+        <button onclick="createGroup()">Create Group</button>
+    </div>
+
+    <div class="container" id="chat-container" style="display: none;">
+        <div class="header" id="group-name">Chat</div>
+        <div class="messages" id="messages"></div>
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <button class="back-btn" onclick="goBack()">Back to Home</button>
+    </div>
+
+    <script>
+        let userName = localStorage.getItem('userName');
+        let groups = [];
+
+        if (!userName) {
+            userName = prompt("Enter your username:");
+            localStorage.setItem('userName', userName);
+        }
+
+        function createGroup() {
+            let groupName = prompt("Enter group name:");
+            if (!groupName) return;
+            let password = prompt("Set a password (optional):");
+            let groupId = Date.now();
+            groups.push({ id: groupId, name: groupName, password: password, messages: [] });
+            renderGroups();
+        }
+
+        function renderGroups() {
+            document.getElementById('groups').innerHTML = groups.map(group => 
+                `<div class='group fade-in' onclick='joinGroup(${group.id})'>${group.name} ${group.password ? "(Private)" : "(Public)"}</div>`
+            ).join('');
+        }
+
+        function joinGroup(id) {
+            let group = groups.find(g => g.id === id);
+            if (!group) return;
+            if (group.password) {
+                let password = prompt("Enter the group password:");
+                if (password !== group.password) {
+                    alert("Incorrect password!");
+                    return;
+                }
+            }
+            document.getElementById('chat-container').style.display = 'block';
+            document.getElementById('group-list').style.display = 'none';
+            document.getElementById('group-name').innerText = group.name;
+            document.getElementById('messages').innerHTML = group.messages.map(msg => 
+                `<div class='message fade-in'><span>${msg.user}:</span> <p>${msg.text}</p></div>`
+            ).join('');
+            document.getElementById('chat-container').dataset.groupId = id;
+        }
+
+        function sendMessage() {
+            let messageText = document.getElementById('message-input').value;
+            if (!messageText) return;
+            let groupId = document.getElementById('chat-container').dataset.groupId;
+            let group = groups.find(g => g.id == groupId);
+            if (!group) return;
+            let message = { user: userName, text: messageText };
+            group.messages.push(message);
+            document.getElementById('messages').innerHTML += 
+                `<div class='message fade-in'><span>${message.user}:</span> <p>${message.text}</p></div>`;
+            document.getElementById('message-input').value = '';
+        }
+
+        function goBack() {
+            window.location.href = "home.html";
+        }
+
+        renderGroups();
+    </script>
+</body>
+</html>
