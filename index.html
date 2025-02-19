@@ -3,28 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spyrox 0.0.2</title>
+    <title>Botnet Control Panel</title>
     <link rel="stylesheet" href="d.css">
 </head>
 <body>
     <div class="container">
-        <h1>Spyrox Stresser</h1>
-        <form id="stressForm">
-            <label for="target">Target (IP or URL):</label>
-            <input type="text" id="target" name="target" required>
-            <label for="targetPort">Target Port (optional):</label>
-            <input type="number" id="targetPort" name="targetPort">
-            <label for="duration">Duration (seconds):</label>
-            <input type="number" id="duration" name="duration" required>
-            <label for="attackType">Attack Type:</label>
-            <select id="attackType" name="attackType" required>
-                <option value="http">HTTP Flood</option>
-                <option value="udp">UDP Flood</option>
-                <option value="tcp">TCP Flood</option>
+        <h1>Botnet Control Panel</h1>
+        <div class="botnet-info">
+            <h2>Botnet Information</h2>
+            <p>Number of Bots: <span id="bot-count">0</span></p>
+            <p>Status: <span id="bot-status">Offline</span></p>
+        </div>
+        <div class="attack-options">
+            <h2>Attack Options</h2>
+            <label for="target-url">Target URL:</label>
+            <input type="text" id="target-url" placeholder="Enter target URL">
+            <label for="attack-type">Attack Type:</label>
+            <select id="attack-type">
+                <option value="SYN">SYN Flood</option>
+                <option value="UDP">UDP Flood</option>
+                <option value="TCP">TCP Flood</option>
+                <option value="ICMP">ICMP Flood</option>
             </select>
-            <button type="submit">Start Stress Test</button>
-        </form>
-        <div id="output"></div>
+            <button onclick="startAttack()">Start Attack</button>
+        </div>
     </div>
     <script src="d.js"></script>
 </body>
