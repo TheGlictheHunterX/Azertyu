@@ -3,53 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RedEvil C2</title>
+    <title>RedEvil C2 | V1</title>
     <style>
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #000;
-            color: #ff0000;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        #controls {
-            background-color: #333;
-            padding: 20px;
-            border: 2px solid #ff0000;
-            border-radius: 10px;
-            text-align: center;
-        }
-        #status {
-            margin-top: 20px;
-            color: #ff0000;
-        }
-        input, select, button {
-            margin: 5px 0;
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #ff0000;
-            color: #000;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #cc0000;
-        }
-        #gif-container {
-            margin-top: 20px;
-        }
-        #gif {
-            width: 300px;
-            height: auto;
-        }
+  body {
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(90deg, #1a1a1a, #333333);
+    color: #00ff99;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* تعديل لضمان وجود المسافة العليا */
+    height: 100vh;
+    text-shadow: 0 0 8px #00ff99, 0 0 15px #00ff99;
+    background-size: 200% 200%;
+    animation: gradientAnimation 3s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 200% 0%; }
+    50% { background-position: 0% 100%; }
+    100% { background-position: 200% 0%; }
+}
+
+#controls {
+    background: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    border: 3px solid #00ff99;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 0 20px #00ff99;
+    transition: all 0.4s ease;
+    margin-top: 40px; /* إضافة المسافة بين الواجهة العلوية والعناصر */
+}
+
+#controls:hover {
+    transform: scale(1.05);
+}
+
+#status {
+    margin-top: 20px;
+    color: #00ff99;
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+input, select, button {
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid #00ff99;
+    border-radius: 12px;
+    background: transparent;
+    color: #00ff99;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+input:focus, select:focus, button:focus {
+    border-color: #009966;
+    box-shadow: 0 0 10px #009966;
+}
+
+button {
+    background: linear-gradient(90deg, #00ff99, #009966);
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px #00ff99;
+    padding: 12px 24px;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #009966, #00ff99);
+    box-shadow: 0 0 20px #009966;
+    transform: translateY(-4px);
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+#gif-container {
+    margin-top: 40px;
+}
+
+#gif {
+    width: 400px;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 0 30px #00ff99;
+    transition: all 0.3s ease;
+}
+
+#gif:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px #00ff99;
+}
+
     </style>
 </head>
 <body>
@@ -83,7 +139,6 @@
         <br>
         <button onclick="startAttack()">Start Attack</button>
         <button onclick="stopAttack()">Stop Attack</button>
-        <button onclick="transferToCLI()">Transfer to CLI</button>
     </div>
     <div id="status">
         <p>Bot Count: 1000</p>
