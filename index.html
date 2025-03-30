@@ -1,282 +1,846 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EvilnEt Locker - Secure File Server</title>
-  <style>
-    /* General Styles */
-    body {
-      background-color: #000;
-      color: #00ff00;
-      font-family: 'Courier New', Courier, monospace;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      background-color: #111;
-      padding: 20px;
-      border: 2px solid #00ff00;
-      border-radius: 10px;
-      width: 80%;
-      max-width: 800px;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 5px #00ff00;
-      text-align: center;
-    }
-
-    .tagline {
-      font-size: 1rem;
-      color: #666;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    /* Upload Section */
-    .upload-section {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    #fileInput {
-      display: none;
-    }
-
-    #uploadBtn, #importBtn {
-      background-color: #00ff00;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-      margin: 5px;
-    }
-
-    #uploadBtn:hover, #importBtn:hover {
-      background-color: #00cc00;
-    }
-
-    /* File List Section */
-    .file-list {
-      margin-bottom: 20px;
-      border: 2px solid #00ff00;
-      border-radius: 5px;
-      padding: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .file-list h2 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    #fileList {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    #fileList li {
-      background-color: #222;
-      padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    #fileList li:hover {
-      background-color: #333;
-    }
-
-    /* Empty Server Message */
-    .empty-message {
-      text-align: center;
-      color: #666;
-      font-style: italic;
-    }
-
-    /* Action Buttons */
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    #selectAllBtn, #exportBtn, #deleteBtn {
-      background-color: #00ff00;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    #selectAllBtn:hover, #exportBtn:hover, #deleteBtn:hover {
-      background-color: #00cc00;
-    }
-
-    #deleteBtn {
-      background-color: #ff4444;
-    }
-
-    #deleteBtn:hover {
-      background-color: #cc0000;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riko - HostMe</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --text-secondary: #b8b8b8;
+            --editor-bg: #0d1117;
+            --terminal-bg: #0a0e14;
+            --success: #4ade80;
+            --error: #f87171;
+            --warning: #fbbf24;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'Consolas', monospace;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .header {
+            background-color: var(--secondary);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--accent);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--highlight);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo span {
+            font-size: 14px;
+            background-color: var(--highlight);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-primary {
+            background-color: var(--highlight);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #d13354;
+        }
+        
+        .btn-primary:disabled {
+            background-color: #7a2a3a;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: var(--accent);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #13315f;
+        }
+        
+        .btn-icon {
+            padding: 8px;
+            border-radius: 4px;
+            background-color: transparent;
+            color: var(--text);
+        }
+        
+        .btn-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .editor-section {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .panel-header {
+            background-color: var(--secondary);
+            padding: 8px 15px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--accent);
+        }
+        
+        .panel-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .panel-tab {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            color: var(--text-secondary);
+        }
+        
+        .panel-tab.active {
+            background-color: var(--accent);
+            color: var(--text);
+        }
+        
+        .editor-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .code-editor {
+            flex: 1;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            border: none;
+            resize: none;
+            outline: none;
+            background-color: var(--editor-bg);
+            color: var(--text);
+            font-family: 'Fira Code', 'Consolas', monospace;
+            white-space: pre;
+            overflow: auto;
+            tab-size: 4;
+        }
+        
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+            border-left: 1px solid var(--accent);
+        }
+        
+        .output-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .output-content {
+            flex: 1;
+            padding: 15px;
+            overflow: auto;
+            background-color: var(--terminal-bg);
+            color: var(--text);
+            white-space: pre-wrap;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+        }
+        
+        .terminal-input {
+            display: flex;
+            padding: 10px 15px;
+            background-color: var(--terminal-bg);
+            border-top: 1px solid var(--accent);
+        }
+        
+        .terminal-prompt {
+            color: var(--highlight);
+            margin-right: 8px;
+        }
+        
+        .terminal-input-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .status-bar {
+            background-color: var(--secondary);
+            padding: 5px 15px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--accent);
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .status-indicator.ready {
+            background-color: var(--success);
+        }
+        
+        .status-indicator.busy {
+            background-color: var(--warning);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-indicator.error {
+            background-color: var(--error);
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--highlight);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-progress-bar {
+            height: 100%;
+            background-color: var(--highlight);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .package-manager {
+            position: absolute;
+            top: 40px;
+            right: 20px;
+            background-color: var(--secondary);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            padding: 15px;
+            width: 300px;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .package-manager h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .package-input {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: var(--primary);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        .package-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        
+        .package-item {
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .package-item:hover {
+            background-color: var(--accent);
+        }
+        
+        .resize-handle {
+            width: 5px;
+            background-color: var(--accent);
+            cursor: col-resize;
+            transition: background-color 0.2s;
+        }
+        
+        .resize-handle:hover {
+            background-color: var(--highlight);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .output-section {
+                border-left: none;
+                border-top: 1px solid var(--accent);
+            }
+            
+            .resize-handle {
+                display: none;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div class="container">
-    <h1>EvilnEt Locker</h1>
-    <p class="tagline">Secure Server Storage - By BlackMaskers</p>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-code"></i> Riko - HostMe <span>PRO</span>
+            </div>
+            <div class="controls">
+                <button class="btn btn-secondary" id="install-packages">
+                    <i class="fas fa-box-open"></i> Packages
+                </button>
+                <button class="btn btn-primary" id="run" disabled>
+                    <i class="fas fa-play"></i> Run (F9)
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="editor-section">
+                <div class="panel-header">
+                    <div class="panel-tabs">
+                        <button class="panel-tab active">main.py</button>
+                        <button class="panel-tab"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div>
+                        <button class="btn-icon" title="Save">
+                            <i class="fas fa-save"></i>
+                        </button>
+                        <button class="btn-icon" title="Settings">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <textarea id="code" class="code-editor" spellcheck="false"># Welcome to Riko - HostMe PRO
+# Your code continues running even after you close this tab
 
-    <!-- File Upload Section -->
-    <div class="upload-section">
-      <input type="file" id="fileInput" multiple>
-      <button id="importBtn">Import Files</button>
-      <button id="uploadBtn">Upload Files</button>
+print("Hello, World!")
+
+# Example: Long-running process
+import time
+
+for i in range(10):
+    print(f"Processing item {i}...")
+    time.sleep(1)
+
+print("Task completed!")</textarea>
+                    <div class="loading-overlay" id="loading-overlay">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-progress">
+                            <div class="loading-progress-bar" id="loading-progress"></div>
+                        </div>
+                        <div id="loading-text">Initializing Python runtime...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="resize-handle"></div>
+            
+            <div class="output-section">
+                <div class="panel-header">
+                    <div class="panel-tabs">
+                        <button class="panel-tab active">Terminal</button>
+                        <button class="panel-tab">Output</button>
+                        <button class="panel-tab">Debug</button>
+                    </div>
+                    <div>
+                        <button class="btn-icon" id="clear-terminal" title="Clear">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="output-container">
+                    <div class="output-content" id="output-content"></div>
+                    <div class="terminal-input">
+                        <span class="terminal-prompt">>>></span>
+                        <input type="text" class="terminal-input-field" id="terminal-input" placeholder="Enter Python command...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator" id="status-indicator"></div>
+                <span id="status-text">Initializing...</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-microchip"></i>
+                <span id="memory-usage">Loading...</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-clock"></i>
+                <span id="uptime">00:00:00</span>
+            </div>
+        </div>
     </div>
 
-    <!-- File List Section -->
-    <div class="file-list">
-      <h2>Stored Files</h2>
-      <ul id="fileList">
-        <li class="empty-message">Server is empty. Upload some files!</li>
-      </ul>
+    <div class="package-manager" id="package-manager" style="display: none;">
+        <h3>Package Manager</h3>
+        <input type="text" class="package-input" id="package-search" placeholder="Search packages...">
+        <div class="package-list" id="package-list">
+            <div class="package-item">numpy</div>
+            <div class="package-item">pandas</div>
+            <div class="package-item">matplotlib</div>
+            <div class="package-item">requests</div>
+            <div class="package-item">flask</div>
+            <div class="package-item">django</div>
+            <div class="package-item">tensorflow</div>
+            <div class="package-item">pytorch</div>
+            <div class="package-item">scikit-learn</div>
+            <div class="package-item">beautifulsoup4</div>
+        </div>
+        <button class="btn btn-primary" id="install-selected" style="width: 100%;">
+            <i class="fas fa-download"></i> Install Selected
+        </button>
     </div>
 
-    <!-- Buttons for Select All, Export, and Delete -->
-    <div class="actions">
-      <button id="selectAllBtn">Select All</button>
-      <button id="exportBtn">Export Selected</button>
-      <button id="deleteBtn">Delete Selected</button>
-    </div>
-  </div>
-
-  <script>
-    // Array to store uploaded files
-    let files = [];
-
-    // Load files from local storage on page load
-    function loadFilesFromStorage() {
-      const storedFiles = localStorage.getItem('serverFiles');
-      if (storedFiles) {
-        files = JSON.parse(storedFiles);
-        updateFileList();
-      }
-    }
-
-    // Save files to local storage
-    function saveFilesToStorage() {
-      localStorage.setItem('serverFiles', JSON.stringify(files));
-    }
-
-    // Import Button Logic
-    document.getElementById('importBtn').addEventListener('click', () => {
-      document.getElementById('fileInput').click(); // Trigger file input
-    });
-
-    // Upload Button Logic
-    document.getElementById('uploadBtn').addEventListener('click', () => {
-      const fileInput = document.getElementById('fileInput');
-      const filesToUpload = fileInput.files;
-
-      if (filesToUpload.length > 0) {
-        for (let i = 0; i < filesToUpload.length; i++) {
-          files.push({ name: filesToUpload[i].name, data: URL.createObjectURL(filesToUpload[i]) });
-        }
-        updateFileList();
-        saveFilesToStorage();
-        alert('Files uploaded successfully!');
-      } else {
-        alert('Please select a file to upload.');
-      }
-    });
-
-    // Select All Button Logic
-    document.getElementById('selectAllBtn').addEventListener('click', () => {
-      const checkboxes = document.querySelectorAll('#fileList input[type="checkbox"]');
-      checkboxes.forEach(checkbox => {
-        checkbox.checked = true;
-      });
-    });
-
-    // Export Button Logic
-    document.getElementById('exportBtn').addEventListener('click', () => {
-      const selectedFiles = files.filter((file, index) => {
-        const listItem = document.getElementById(`file-${index}`);
-        return listItem.querySelector('input').checked;
-      });
-
-      if (selectedFiles.length > 0) {
-        selectedFiles.forEach(file => {
-          const link = document.createElement('a');
-          link.href = file.data;
-          link.download = file.name;
-          link.click();
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <script>
+        // Persistent storage for code and output
+        const STORAGE_KEY = 'riko_hostme_pro';
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            const codeEditor = document.getElementById('code');
+            const runButton = document.getElementById('run');
+            const clearButton = document.getElementById('clear-terminal');
+            const outputContent = document.getElementById('output-content');
+            const terminalInput = document.getElementById('terminal-input');
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            const memoryUsage = document.getElementById('memory-usage');
+            const uptimeElement = document.getElementById('uptime');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            const loadingProgress = document.getElementById('loading-progress');
+            const packageManager = document.getElementById('package-manager');
+            const installPackagesBtn = document.getElementById('install-packages');
+            const packageSearch = document.getElementById('package-search');
+            const packageList = document.getElementById('package-list');
+            const installSelectedBtn = document.getElementById('install-selected');
+            
+            let pyodide;
+            let executionId = 0;
+            let currentExecutionId = 0;
+            let uptimeInterval;
+            let startTime = new Date();
+            let resizeHandle = document.querySelector('.resize-handle');
+            let leftPanel = document.querySelector('.editor-section');
+            let rightPanel = document.querySelector('.output-section');
+            let isResizing = false;
+            
+            // Load saved code and state
+            function loadState() {
+                const savedState = localStorage.getItem(STORAGE_KEY);
+                if (savedState) {
+                    try {
+                        const state = JSON.parse(savedState);
+                        if (state.code) codeEditor.value = state.code;
+                        if (state.output) outputContent.textContent = state.output;
+                    } catch (e) {
+                        console.error("Failed to load state:", e);
+                    }
+                }
+            }
+            
+            // Save code and state
+            function saveState() {
+                const state = {
+                    code: codeEditor.value,
+                    output: outputContent.textContent,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            }
+            
+            // Update memory usage display
+            function updateMemoryUsage() {
+                if (pyodide && performance && performance.memory) {
+                    const usedMB = (performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(2);
+                    const totalMB = (performance.memory.jsHeapSizeLimit / (1024 * 1024)).toFixed(2);
+                    memoryUsage.textContent = `${usedMB}MB / ${totalMB}MB`;
+                } else if (pyodide) {
+                    memoryUsage.textContent = "Active";
+                } else {
+                    memoryUsage.textContent = "Loading...";
+                }
+            }
+            
+            // Update uptime display
+            function updateUptime() {
+                const now = new Date();
+                const diff = now - startTime;
+                const hours = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                uptimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            
+            // Initialize Pyodide with persistent execution
+            async function initializePyodide() {
+                statusIndicator.className = 'status-indicator busy';
+                statusText.textContent = 'Initializing Python runtime...';
+                loadingText.textContent = 'Downloading Pyodide (≈5MB)...';
+                
+                try {
+                    // Load Pyodide
+                    pyodide = await loadPyodide({
+                        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/",
+                        stdout: handleOutput,
+                        stderr: handleOutput
+                    });
+                    loadingProgress.style.width = '30%';
+                    loadingText.textContent = 'Loading core packages...';
+                    
+                    // Load required packages
+                    await pyodide.loadPackage(['micropip']);
+                    loadingProgress.style.width = '60%';
+                    loadingText.textContent = 'Setting up environment...';
+                    
+                    // Install common packages
+                    try {
+                        await pyodide.runPythonAsync(`
+                            import micropip
+                            await micropip.install(['numpy', 'pandas'])
+                        `);
+                    } catch (e) {
+                        console.log("Some packages failed to install:", e);
+                    }
+                    
+                    loadingProgress.style.width = '100%';
+                    loadingText.textContent = 'Ready!';
+                    
+                    // Hide loading overlay after a short delay
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                        runButton.disabled = false;
+                        statusIndicator.className = 'status-indicator ready';
+                        statusText.textContent = 'Ready';
+                        
+                        // Start uptime counter
+                        uptimeInterval = setInterval(updateUptime, 1000);
+                        updateUptime();
+                        
+                        // Start memory usage updates
+                        setInterval(updateMemoryUsage, 3000);
+                        updateMemoryUsage();
+                        
+                        // Restore any running code from previous session
+                        if (outputContent.textContent.includes('Running')) {
+                            statusIndicator.className = 'status-indicator busy';
+                            statusText.textContent = 'Process running in background';
+                        }
+                    }, 500);
+                } catch (error) {
+                    statusIndicator.className = 'status-indicator error';
+                    statusText.textContent = 'Initialization failed';
+                    loadingText.textContent = `Error: ${error.message}`;
+                    console.error("Pyodide initialization failed:", error);
+                }
+            }
+            
+            // Handle output from Python
+            function handleOutput(text) {
+                outputContent.textContent += text;
+                outputContent.scrollTop = outputContent.scrollHeight;
+                saveState();
+            }
+            
+            // Run Python code with persistent execution
+            async function runPythonCode() {
+                if (!pyodide) return;
+                
+                const code = codeEditor.value;
+                const currentId = ++executionId;
+                currentExecutionId = currentId;
+                
+                statusIndicator.className = 'status-indicator busy';
+                statusText.textContent = 'Executing...';
+                runButton.disabled = true;
+                
+                // Clear previous output if not continuing
+                if (!outputContent.textContent.includes('Running')) {
+                    outputContent.textContent = '';
+                }
+                
+                handleOutput(`\n[Execution ${currentId} started at ${new Date().toLocaleTimeString()}]\n`);
+                
+                try {
+                    // Run the code in a Web Worker-like environment to keep it running
+                    await pyodide.runPythonAsync(`
+                        import js
+                        from pyodide import create_proxy
+                        import asyncio
+                        
+                        async def run_code():
+                            try:
+                                ${code.replace(/"/g, '\\"')}
+                            except Exception as e:
+                                js.document.getElementById("output-content").textContent += f"\\nError: {str(e)}\\n"
+                            finally:
+                                if ${currentId} == ${executionId}:
+                                    js.document.getElementById("status-text").textContent = "Ready"
+                                    js.document.querySelector("#status-indicator").className = "status-indicator ready"
+                                    js.document.getElementById("run").disabled = False
+                        
+                        asyncio.create_task(run_code())
+                    `);
+                    
+                    handleOutput(`\n[Execution ${currentId} continues running in background]\n`);
+                    statusText.textContent = 'Running in background';
+                } catch (error) {
+                    handleOutput(`\nError: ${error.message}\n`);
+                    statusIndicator.className = 'status-indicator error';
+                    statusText.textContent = 'Execution failed';
+                    runButton.disabled = false;
+                }
+                
+                saveState();
+            }
+            
+            // Handle terminal input
+            async function handleTerminalInput() {
+                if (!pyodide) return;
+                
+                const command = terminalInput.value.trim();
+                if (!command) return;
+                
+                terminalInput.value = '';
+                handleOutput(`>>> ${command}\n`);
+                
+                try {
+                    const result = await pyodide.runPythonAsync(command);
+                    if (result !== undefined) {
+                        handleOutput(`${result}\n`);
+                    }
+                } catch (error) {
+                    handleOutput(`Error: ${error.message}\n`);
+                }
+            }
+            
+            // Package manager functions
+            function showPackageManager() {
+                packageManager.style.display = 'block';
+            }
+            
+            function hidePackageManager() {
+                packageManager.style.display = 'none';
+            }
+            
+            async function installSelectedPackages() {
+                const selectedPackages = Array.from(packageList.querySelectorAll('.package-item.selected'))
+                    .map(el => el.textContent.trim());
+                
+                if (selectedPackages.length === 0) return;
+                
+                statusIndicator.className = 'status-indicator busy';
+                statusText.textContent = 'Installing packages...';
+                runButton.disabled = true;
+                
+                try {
+                    await pyodide.runPythonAsync(`
+                        import micropip
+                        await micropip.install(${JSON.stringify(selectedPackages)})
+                    `);
+                    handleOutput(`\nSuccessfully installed: ${selectedPackages.join(', ')}\n`);
+                    statusIndicator.className = 'status-indicator ready';
+                    statusText.textContent = 'Ready';
+                } catch (error) {
+                    handleOutput(`\nFailed to install packages: ${error.message}\n`);
+                    statusIndicator.className = 'status-indicator error';
+                    statusText.textContent = 'Installation failed';
+                } finally {
+                    runButton.disabled = false;
+                    hidePackageManager();
+                }
+            }
+            
+            // Event listeners
+            runButton.addEventListener('click', runPythonCode);
+            
+            clearButton.addEventListener('click', function() {
+                outputContent.textContent = '';
+                saveState();
+            });
+            
+            terminalInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    handleTerminalInput();
+                }
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F9') {
+                    e.preventDefault();
+                    runButton.click();
+                }
+            });
+            
+            // Package manager events
+            installPackagesBtn.addEventListener('click', showPackageManager);
+            
+            packageSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                Array.from(packageList.children).forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+            
+            packageList.addEventListener('click', function(e) {
+                if (e.target.classList.contains('package-item')) {
+                    e.target.classList.toggle('selected');
+                }
+            });
+            
+            installSelectedBtn.addEventListener('click', installSelectedPackages);
+            
+            // Panel resizing
+            resizeHandle.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.addEventListener('mousemove', handleResize);
+                document.addEventListener('mouseup', stopResize);
+            });
+            
+            function handleResize(e) {
+                if (!isResizing) return;
+                
+                const containerWidth = document.querySelector('.main-content').offsetWidth;
+                const mouseX = e.clientX;
+                const leftPanelWidth = (mouseX / containerWidth) * 100;
+                
+                leftPanel.style.width = `${leftPanelWidth}%`;
+                rightPanel.style.width = `${100 - leftPanelWidth}%`;
+            }
+            
+            function stopResize() {
+                isResizing = false;
+                document.body.style.cursor = '';
+                document.removeEventListener('mousemove', handleResize);
+                document.removeEventListener('mouseup', stopResize);
+            }
+            
+            // Save state periodically
+            setInterval(saveState, 10000);
+            
+            // Initialize the application
+            loadState();
+            initializePyodide();
         });
-      } else {
-        alert('Please select files to export.');
-      }
-    });
-
-    // Delete Button Logic
-    document.getElementById('deleteBtn').addEventListener('click', () => {
-      const remainingFiles = files.filter((file, index) => {
-        const listItem = document.getElementById(`file-${index}`);
-        return !listItem.querySelector('input').checked;
-      });
-
-      files = remainingFiles;
-      updateFileList();
-      saveFilesToStorage();
-      alert('Selected files deleted successfully!');
-    });
-
-    // Function to update the file list
-    function updateFileList() {
-      const fileList = document.getElementById('fileList');
-      fileList.innerHTML = '';
-
-      if (files.length === 0) {
-        fileList.innerHTML = '<li class="empty-message">Server is empty. Upload some files!</li>';
-      } else {
-        files.forEach((file, index) => {
-          const listItem = document.createElement('li');
-          listItem.id = `file-${index}`;
-
-          const fileName = document.createElement('span');
-          fileName.textContent = file.name;
-
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-
-          listItem.appendChild(checkbox);
-          listItem.appendChild(fileName);
-          fileList.appendChild(listItem);
-        });
-      }
-    }
-
-    // Load files when the page loads
-    loadFilesFromStorage();
-  </script>
+    </script>
 </body>
 </html>
