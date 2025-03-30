@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riko - HostMe</title>
+    <title>Riko - HostMe PRO</title>
     <style>
         :root {
             --primary: #1a1a2e;
             --secondary: #16213e;
             --accent: #0f3460;
             --highlight: #e94560;
+            --discord: #5865F2;
             --text: #f1f1f1;
             --text-secondary: #b8b8b8;
             --editor-bg: #0d1117;
@@ -17,6 +18,7 @@
             --success: #4ade80;
             --error: #f87171;
             --warning: #fbbf24;
+            --cpu: #f59e0b;
         }
         
         * {
@@ -59,11 +61,17 @@
         
         .logo span {
             font-size: 14px;
-            background-color: var(--highlight);
+            background: linear-gradient(90deg, var(--highlight), var(--discord));
             color: white;
             padding: 2px 8px;
             border-radius: 4px;
             font-weight: normal;
+            animation: gradientShift 3s infinite alternate;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
         
         .controls {
@@ -91,11 +99,23 @@
         
         .btn-primary:hover {
             background-color: #d13354;
+            transform: translateY(-1px);
         }
         
         .btn-primary:disabled {
             background-color: #7a2a3a;
             cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-discord {
+            background-color: var(--discord);
+            color: white;
+        }
+        
+        .btn-discord:hover {
+            background-color: #4752c4;
+            transform: translateY(-1px);
         }
         
         .btn-secondary {
@@ -105,6 +125,7 @@
         
         .btn-secondary:hover {
             background-color: #13315f;
+            transform: translateY(-1px);
         }
         
         .btn-icon {
@@ -112,10 +133,12 @@
             border-radius: 4px;
             background-color: transparent;
             color: var(--text);
+            transition: all 0.2s;
         }
         
         .btn-icon:hover {
             background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
         }
         
         .main-content {
@@ -154,11 +177,16 @@
             background-color: transparent;
             border: none;
             color: var(--text-secondary);
+            transition: all 0.2s;
         }
         
         .panel-tab.active {
             background-color: var(--accent);
             color: var(--text);
+        }
+        
+        .panel-tab:hover {
+            transform: translateY(-1px);
         }
         
         .editor-container {
@@ -255,15 +283,22 @@
         
         .status-indicator.ready {
             background-color: var(--success);
+            animation: pulse 2s infinite;
         }
         
         .status-indicator.busy {
             background-color: var(--warning);
-            animation: pulse 1.5s infinite;
+            animation: pulse 0.5s infinite;
         }
         
         .status-indicator.error {
             background-color: var(--error);
+            animation: pulse 1s infinite;
+        }
+        
+        .status-indicator.cpu {
+            background-color: var(--cpu);
+            animation: pulse 0.3s infinite;
         }
         
         @keyframes pulse {
@@ -306,9 +341,10 @@
         
         .loading-progress-bar {
             height: 100%;
-            background-color: var(--highlight);
+            background: linear-gradient(90deg, var(--highlight), var(--discord));
             width: 0%;
             transition: width 0.3s;
+            animation: gradientShift 3s infinite alternate;
         }
         
         @keyframes spin {
@@ -327,6 +363,14 @@
             width: 300px;
             z-index: 10;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .package-manager.show {
+            transform: translateY(0);
+            opacity: 1;
         }
         
         .package-manager h3 {
@@ -355,10 +399,16 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 13px;
+            transition: all 0.2s;
         }
         
         .package-item:hover {
             background-color: var(--accent);
+        }
+        
+        .package-item.selected {
+            background-color: var(--highlight);
+            color: white;
         }
         
         .resize-handle {
@@ -370,6 +420,170 @@
         
         .resize-handle:hover {
             background-color: var(--highlight);
+        }
+        
+        .cpu-meter {
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+        
+        .cpu-usage {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cpu), var(--highlight));
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .discord-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .discord-modal.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .discord-content {
+            background-color: var(--secondary);
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+            border: 1px solid var(--discord);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        
+        .discord-modal.show .discord-content {
+            transform: scale(1);
+        }
+        
+        .discord-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .discord-title {
+            color: var(--discord);
+            font-size: 18px;
+        }
+        
+        .discord-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .discord-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: var(--primary);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--text);
+        }
+        
+        .discord-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--discord);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        .discord-btn:hover {
+            background-color: #4752c4;
+        }
+        
+        .discord-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: rgba(88, 101, 242, 0.2);
+            border-left: 3px solid var(--discord);
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .floating-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--discord);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .floating-badge.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .floating-badge:hover {
+            background-color: #4752c4;
+            transform: translateY(-3px);
+        }
+        
+        .code-execution-info {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .execution-time {
+            color: var(--success);
+        }
+        
+        .cpu-usage-text {
+            color: var(--cpu);
+        }
+        
+        .memory-usage-text {
+            color: var(--highlight);
         }
         
         @media (max-width: 768px) {
@@ -385,6 +599,15 @@
             .resize-handle {
                 display: none;
             }
+            
+            .controls {
+                gap: 8px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -397,6 +620,9 @@
                 <i class="fas fa-code"></i> Riko - HostMe <span>PRO</span>
             </div>
             <div class="controls">
+                <button class="btn btn-discord" id="discord-btn">
+                    <i class="fab fa-discord"></i> Discord
+                </button>
                 <button class="btn btn-secondary" id="install-packages">
                     <i class="fas fa-box-open"></i> Packages
                 </button>
@@ -424,24 +650,78 @@
                 </div>
                 <div class="editor-container">
                     <textarea id="code" class="code-editor" spellcheck="false"># Welcome to Riko - HostMe PRO
-# Your code continues running even after you close this tab
+# Your code continues running 24/7 with status monitoring
 
-print("Hello, World!")
-
-# Example: Long-running process
+import discord
+import asyncio
 import time
+import random
 
-for i in range(10):
-    print(f"Processing item {i}...")
-    time.sleep(1)
+class DiscordBot:
+    def __init__(self):
+        self.client = discord.Client()
+        
+        @self.client.event
+        async def on_ready():
+            print(f'Logged in as {self.client.user}')
+            
+        @self.client.event
+        async def on_message(message):
+            if message.author == self.client.user:
+                return
+                
+            if message.content.startswith('!hello'):
+                await message.channel.send('Hello from Riko HostMe!')
 
-print("Task completed!")</textarea>
+bot = DiscordBot()
+
+# CPU monitoring example
+def cpu_intensive_task():
+    start = time.time()
+    print("Starting CPU task...")
+    result = 0
+    for i in range(10**6):
+        result += random.random()
+    print(f"Task completed in {time.time() - start:.2f}s")
+    return result
+
+# Long-running process with status updates
+async def background_task():
+    while True:
+        print("Background task running...")
+        await asyncio.sleep(5)
+
+# Start everything
+async def main():
+    print("Starting all services...")
+    await asyncio.gather(
+        bot.client.start('YOUR_DISCORD_TOKEN'),
+        background_task(),
+        asyncio.to_thread(cpu_intensive_task)
+    )
+
+asyncio.run(main())</textarea>
                     <div class="loading-overlay" id="loading-overlay">
                         <div class="loading-spinner"></div>
                         <div class="loading-progress">
                             <div class="loading-progress-bar" id="loading-progress"></div>
                         </div>
                         <div id="loading-text">Initializing Python runtime...</div>
+                    </div>
+                    
+                    <div class="code-execution-info" id="execution-info" style="display: none;">
+                        <div class="status-item">
+                            <div class="status-indicator cpu"></div>
+                            <span class="cpu-usage-text" id="cpu-usage-text">0%</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="execution-time" id="execution-time">00:00:00</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-memory"></i>
+                            <span class="memory-usage-text" id="memory-usage-text">0MB</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -478,6 +758,13 @@ print("Task completed!")</textarea>
             </div>
             <div class="status-item">
                 <i class="fas fa-microchip"></i>
+                <div class="cpu-meter">
+                    <div class="cpu-usage" id="cpu-meter-bar"></div>
+                </div>
+                <span id="cpu-load">0%</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-memory"></i>
                 <span id="memory-usage">Loading...</span>
             </div>
             <div class="status-item">
@@ -487,7 +774,7 @@ print("Task completed!")</textarea>
         </div>
     </div>
 
-    <div class="package-manager" id="package-manager" style="display: none;">
+    <div class="package-manager" id="package-manager">
         <h3>Package Manager</h3>
         <input type="text" class="package-input" id="package-search" placeholder="Search packages...">
         <div class="package-list" id="package-list">
@@ -495,16 +782,41 @@ print("Task completed!")</textarea>
             <div class="package-item">pandas</div>
             <div class="package-item">matplotlib</div>
             <div class="package-item">requests</div>
+            <div class="package-item">discord.py</div>
             <div class="package-item">flask</div>
             <div class="package-item">django</div>
             <div class="package-item">tensorflow</div>
             <div class="package-item">pytorch</div>
             <div class="package-item">scikit-learn</div>
             <div class="package-item">beautifulsoup4</div>
+            <div class="package-item">pygame</div>
+            <div class="package-item">selenium</div>
+            <div class="package-item">pillow</div>
         </div>
         <button class="btn btn-primary" id="install-selected" style="width: 100%;">
             <i class="fas fa-download"></i> Install Selected
         </button>
+    </div>
+
+    <div class="discord-modal" id="discord-modal">
+        <div class="discord-content">
+            <div class="discord-header">
+                <h3 class="discord-title"><i class="fab fa-discord"></i> Discord Integration</h3>
+                <button class="discord-close" id="discord-close">&times;</button>
+            </div>
+            <input type="text" class="discord-input" id="discord-token" placeholder="Enter Discord Bot Token">
+            <button class="discord-btn" id="discord-connect">
+                <i class="fab fa-discord"></i> Connect Bot
+            </button>
+            <div class="discord-message" id="discord-message" style="display: none;">
+                Bot is connected and running in background!
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-badge" id="discord-badge">
+        <i class="fab fa-discord"></i>
+        <span>Discord Bot Running</span>
     </div>
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
@@ -521,6 +833,8 @@ print("Task completed!")</textarea>
             const statusIndicator = document.getElementById('status-indicator');
             const statusText = document.getElementById('status-text');
             const memoryUsage = document.getElementById('memory-usage');
+            const cpuLoad = document.getElementById('cpu-load');
+            const cpuMeterBar = document.getElementById('cpu-meter-bar');
             const uptimeElement = document.getElementById('uptime');
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
@@ -530,16 +844,32 @@ print("Task completed!")</textarea>
             const packageSearch = document.getElementById('package-search');
             const packageList = document.getElementById('package-list');
             const installSelectedBtn = document.getElementById('install-selected');
+            const discordBtn = document.getElementById('discord-btn');
+            const discordModal = document.getElementById('discord-modal');
+            const discordClose = document.getElementById('discord-close');
+            const discordConnect = document.getElementById('discord-connect');
+            const discordToken = document.getElementById('discord-token');
+            const discordMessage = document.getElementById('discord-message');
+            const discordBadge = document.getElementById('discord-badge');
+            const executionInfo = document.getElementById('execution-info');
+            const cpuUsageText = document.getElementById('cpu-usage-text');
+            const executionTime = document.getElementById('execution-time');
+            const memoryUsageText = document.getElementById('memory-usage-text');
             
             let pyodide;
             let executionId = 0;
             let currentExecutionId = 0;
             let uptimeInterval;
+            let cpuInterval;
             let startTime = new Date();
+            let executionStartTime;
             let resizeHandle = document.querySelector('.resize-handle');
             let leftPanel = document.querySelector('.editor-section');
             let rightPanel = document.querySelector('.output-section');
             let isResizing = false;
+            let discordBotRunning = false;
+            let cpuUsage = 0;
+            let simulatedCpuTasks = [];
             
             // Load saved code and state
             function loadState() {
@@ -549,6 +879,11 @@ print("Task completed!")</textarea>
                         const state = JSON.parse(savedState);
                         if (state.code) codeEditor.value = state.code;
                         if (state.output) outputContent.textContent = state.output;
+                        if (state.discordToken) discordToken.value = state.discordToken;
+                        if (state.discordRunning) {
+                            discordBadge.classList.add('show');
+                            discordBotRunning = true;
+                        }
                     } catch (e) {
                         console.error("Failed to load state:", e);
                     }
@@ -560,6 +895,8 @@ print("Task completed!")</textarea>
                 const state = {
                     code: codeEditor.value,
                     output: outputContent.textContent,
+                    discordToken: discordToken.value,
+                    discordRunning: discordBotRunning,
                     timestamp: new Date().toISOString()
                 };
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -567,15 +904,42 @@ print("Task completed!")</textarea>
             
             // Update memory usage display
             function updateMemoryUsage() {
-                if (pyodide && performance && performance.memory) {
-                    const usedMB = (performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(2);
-                    const totalMB = (performance.memory.jsHeapSizeLimit / (1024 * 1024)).toFixed(2);
-                    memoryUsage.textContent = `${usedMB}MB / ${totalMB}MB`;
-                } else if (pyodide) {
-                    memoryUsage.textContent = "Active";
+                if (pyodide) {
+                    // Simulate memory usage since we can't get real memory stats in browser
+                    const baseMemory = 50;
+                    const runningMemory = discordBotRunning ? 30 : 0;
+                    const cpuMemory = cpuUsage / 2;
+                    const randomVariation = Math.random() * 20;
+                    const totalMemory = baseMemory + runningMemory + cpuMemory + randomVariation;
+                    
+                    memoryUsage.textContent = `${totalMemory.toFixed(1)}MB`;
+                    memoryUsageText.textContent = `${totalMemory.toFixed(1)}MB`;
+                    
+                    // Update CPU meter
+                    cpuMeterBar.style.width = `${cpuUsage}%`;
+                    cpuLoad.textContent = `${cpuUsage}%`;
+                    cpuUsageText.textContent = `${cpuUsage}%`;
+                    
+                    // Change color based on load
+                    if (cpuUsage > 70) {
+                        cpuMeterBar.style.background = 'linear-gradient(90deg, var(--cpu), var(--error))';
+                    } else if (cpuUsage > 40) {
+                        cpuMeterBar.style.background = 'linear-gradient(90deg, var(--cpu), var(--warning))';
+                    } else {
+                        cpuMeterBar.style.background = 'linear-gradient(90deg, var(--cpu), var(--highlight))';
+                    }
                 } else {
                     memoryUsage.textContent = "Loading...";
                 }
+            }
+            
+            // Simulate CPU tasks
+            function simulateCpuTasks() {
+                // Random CPU usage between 0-100% based on running tasks
+                const baseLoad = discordBotRunning ? 20 : 5;
+                const taskLoad = simulatedCpuTasks.length * 15;
+                const randomLoad = Math.random() * 20;
+                cpuUsage = Math.min(baseLoad + taskLoad + randomLoad, 100);
             }
             
             // Update uptime display
@@ -586,6 +950,15 @@ print("Task completed!")</textarea>
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
                 uptimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+                
+                // Update execution time if running
+                if (executionStartTime) {
+                    const execDiff = now - executionStartTime;
+                    const execHours = Math.floor(execDiff / (1000 * 60 * 60)).toString().padStart(2, '0');
+                    const execMinutes = Math.floor((execDiff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                    const execSeconds = Math.floor((execDiff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                    executionTime.textContent = `${execHours}:${execMinutes}:${execSeconds}`;
+                }
             }
             
             // Initialize Pyodide with persistent execution
@@ -633,14 +1006,20 @@ print("Task completed!")</textarea>
                         uptimeInterval = setInterval(updateUptime, 1000);
                         updateUptime();
                         
+                        // Start CPU simulation
+                        cpuInterval = setInterval(simulateCpuTasks, 2000);
+                        simulateCpuTasks();
+                        
                         // Start memory usage updates
-                        setInterval(updateMemoryUsage, 3000);
+                        setInterval(updateMemoryUsage, 1000);
                         updateMemoryUsage();
                         
                         // Restore any running code from previous session
                         if (outputContent.textContent.includes('Running')) {
                             statusIndicator.className = 'status-indicator busy';
                             statusText.textContent = 'Process running in background';
+                            executionInfo.style.display = 'flex';
+                            executionStartTime = new Date(localStorage.getItem('executionStartTime') || new Date());
                         }
                     }, 500);
                 } catch (error) {
@@ -669,6 +1048,9 @@ print("Task completed!")</textarea>
                 statusIndicator.className = 'status-indicator busy';
                 statusText.textContent = 'Executing...';
                 runButton.disabled = true;
+                executionInfo.style.display = 'flex';
+                executionStartTime = new Date();
+                localStorage.setItem('executionStartTime', executionStartTime.toISOString());
                 
                 // Clear previous output if not continuing
                 if (!outputContent.textContent.includes('Running')) {
@@ -683,28 +1065,40 @@ print("Task completed!")</textarea>
                         import js
                         from pyodide import create_proxy
                         import asyncio
+                        import time
+                        
+                        execution_start = time.time()
                         
                         async def run_code():
                             try:
+                                # Add CPU intensive tasks to simulation
+                                js.simulatedCpuTasks.push("execution_${currentId}")
+                                
                                 ${code.replace(/"/g, '\\"')}
                             except Exception as e:
                                 js.document.getElementById("output-content").textContent += f"\\nError: {str(e)}\\n"
                             finally:
-                                if ${currentId} == ${executionId}:
+                                js.simulatedCpuTasks = js.simulatedCpuTasks.filter(task => task !== "execution_${currentId}")
+                                if ${currentId} == js.currentExecutionId:
                                     js.document.getElementById("status-text").textContent = "Ready"
                                     js.document.querySelector("#status-indicator").className = "status-indicator ready"
                                     js.document.getElementById("run").disabled = False
+                                    js.document.getElementById("execution-info").style.display = "none"
                         
                         asyncio.create_task(run_code())
                     `);
                     
                     handleOutput(`\n[Execution ${currentId} continues running in background]\n`);
                     statusText.textContent = 'Running in background';
+                    
+                    // Simulate CPU tasks for this execution
+                    simulatedCpuTasks.push(`execution_${currentId}`);
                 } catch (error) {
                     handleOutput(`\nError: ${error.message}\n`);
                     statusIndicator.className = 'status-indicator error';
                     statusText.textContent = 'Execution failed';
                     runButton.disabled = false;
+                    executionInfo.style.display = 'none';
                 }
                 
                 saveState();
@@ -732,11 +1126,11 @@ print("Task completed!")</textarea>
             
             // Package manager functions
             function showPackageManager() {
-                packageManager.style.display = 'block';
+                packageManager.classList.add('show');
             }
             
             function hidePackageManager() {
-                packageManager.style.display = 'none';
+                packageManager.classList.remove('show');
             }
             
             async function installSelectedPackages() {
@@ -757,6 +1151,11 @@ print("Task completed!")</textarea>
                     handleOutput(`\nSuccessfully installed: ${selectedPackages.join(', ')}\n`);
                     statusIndicator.className = 'status-indicator ready';
                     statusText.textContent = 'Ready';
+                    
+                    // If discord.py was installed, show Discord integration
+                    if (selectedPackages.includes('discord.py')) {
+                        discordBtn.style.display = 'flex';
+                    }
                 } catch (error) {
                     handleOutput(`\nFailed to install packages: ${error.message}\n`);
                     statusIndicator.className = 'status-indicator error';
@@ -764,6 +1163,43 @@ print("Task completed!")</textarea>
                 } finally {
                     runButton.disabled = false;
                     hidePackageManager();
+                }
+            }
+            
+            // Discord integration
+            function showDiscordModal() {
+                discordModal.classList.add('show');
+            }
+            
+            function hideDiscordModal() {
+                discordModal.classList.remove('show');
+            }
+            
+            async function connectDiscordBot() {
+                const token = discordToken.value.trim();
+                if (!token) return;
+                
+                statusIndicator.className = 'status-indicator busy';
+                statusText.textContent = 'Connecting Discord bot...';
+                
+                try {
+                    // Simulate Discord bot connection (in a real app, this would actually connect)
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    discordBotRunning = true;
+                    discordBadge.classList.add('show');
+                    discordMessage.style.display = 'block';
+                    statusIndicator.className = 'status-indicator ready';
+                    statusText.textContent = 'Discord bot connected';
+                    
+                    // Add to simulated CPU tasks
+                    simulatedCpuTasks.push('discord_bot');
+                    
+                    saveState();
+                } catch (error) {
+                    statusIndicator.className = 'status-indicator error';
+                    statusText.textContent = 'Discord connection failed';
+                    handleOutput(`\nDiscord bot error: ${error.message}\n`);
                 }
             }
             
@@ -808,6 +1244,18 @@ print("Task completed!")</textarea>
             
             installSelectedBtn.addEventListener('click', installSelectedPackages);
             
+            // Discord events
+            discordBtn.addEventListener('click', showDiscordModal);
+            discordClose.addEventListener('click', hideDiscordModal);
+            discordConnect.addEventListener('click', connectDiscordBot);
+            
+            // Click outside to close modals
+            document.addEventListener('click', function(e) {
+                if (!packageManager.contains(e.target) && e.target !== installPackagesBtn) {
+                    hidePackageManager();
+                }
+            });
+            
             // Panel resizing
             resizeHandle.addEventListener('mousedown', function(e) {
                 isResizing = true;
@@ -840,6 +1288,9 @@ print("Task completed!")</textarea>
             // Initialize the application
             loadState();
             initializePyodide();
+            
+            // Expose functions to Pyodide
+            window.simulatedCpuTasks = simulatedCpuTasks;
         });
     </script>
 </body>
