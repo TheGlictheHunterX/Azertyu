@@ -1,86 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riko Lock - Under Maintenance</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
-        
-        body {
-            background-color: #000;
-            color: #00ff00;
-            font-family: 'Orbitron', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        h1 {
-            font-size: 3em;
-            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
-            animation: flicker 1.5s infinite alternate;
-        }
-
-        p {
-            font-size: 1.5em;
-            margin-top: 20px;
-            animation: typing 4s steps(40) infinite alternate;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-
-        @keyframes typing {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        .glitch {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0.8;
-        }
-
-        .glitch::before {
-            color: red;
-            animation: glitch 0.3s infinite alternate-reverse;
-        }
-
-        .glitch::after {
-            color: blue;
-            animation: glitch 0.3s infinite alternate;
-        }
-
-        @keyframes glitch {
-            0% { transform: translateX(-2px); }
-            100% { transform: translateX(2px); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IronWall Hosting - DDoS Protection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #0f0f0f;
+      color: #e0e0e0;
+      font-family: 'Fira Code', monospace;
+    }
+    header {
+      background-color: #121212;
+      padding: 30px 0;
+      text-align: center;
+      border-bottom: 2px solid #222;
+    }
+    header img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #ffffff;
+    }
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 30px;
+      background-color: #181818;
+      border: 1px solid #2c2c2c;
+      border-radius: 12px;
+    }
+    h2, h3 {
+      color: #ffcc00;
+    }
+    p {
+      line-height: 1.6;
+    }
+    pre {
+      background-color: #0f0f0f;
+      color: #00ff00;
+      padding: 20px;
+      border-left: 4px solid #ffcc00;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    .download-button {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 12px 24px;
+      background-color: #28a745;
+      color: #fff;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+      background-color: #121212;
+      color: #aaa;
+    }
+    a {
+      color: #58a6ff;
+    }
+    .contact {
+      margin-top: 40px;
+      background-color: #222;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .contact h3 {
+      margin-top: 0;
+    }
+    .contact p {
+      margin: 5px 0;
+    }
+    .additional {
+      margin-top: 40px;
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+    .additional h3 {
+      color: #ffcc00;
+    }
+    .additional ul {
+      list-style-type: square;
+      padding-left: 20px;
+    }
+    .additional li {
+      margin: 10px 0;
+    }
+    iframe {
+      display: block;
+      margin: 30px auto;
+      border: none;
+      border-radius: 10px;
+    }
+    .uptime-status {
+      background: #202020;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #444;
+      color: #00ff99;
+      text-align: center;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="glitch" data-text="Riko Lock">Riko Lock</h1>
-        <p>System Under Heavy Maintenance...</p>
-        <p>We will be back stronger!</p>
+  <header>
+    <img src="https://a.top4top.io/p_34473hcfl1.png" alt="IronWall Logo">
+    <h1>IronWall Hosting</h1>
+  </header>
+  <main>
+    <h2>🛡️ Free Basic DDoS Shield Installation</h2>
+    <p>Includes real-time monitoring, Layer 4/7 filtering, and basic automatic protection. Ideal for gaming, small VPS, and private applications.</p>
+
+    <h3>📥 Auto Installer</h3>
+    <a class="download-button" href="https://www.mediafire.com/file/ynef1vk7j3bf3i4/Final.sh/file" target="_blank">Download Installation Script</a>
+
+    <h3>📜 خطوات التثبيت اليدوي (CLI)</h3>
+    <pre><code>1. ✅ أنشئ ملف السكربت
+nano ultrashield-installer.sh
+
+2. 🔥 استبدل المتغير $GAME_PORT
+GAME_PORT="27015" (قم بذلك في كل مكان داخل السكربت وداخل كود Python)
+
+مثال:
+GAME_PORT = "27015"
+
+3. ✅ اجعل السكربت قابلًا للتنفيذ
+chmod +x ultrashield-installer.sh
+
+4. 🚀 شغل السكربت كـ root
+sudo ./ultrashield-installer.sh
+
+5. ✅ تأكد من صلاحيات الملفات الأخرى
+sudo chmod +x /usr/local/bin/ai_packet_analyzer.py
+sudo chmod +x /usr/local/bin/send_attack_alert.sh
+
+6. 🧠 تحقق من تشغيل البوت والتحليلات
+ps aux | grep ai_packet_analyzer
+أو
+ tail -f /var/log/syslog
+
+7. 🧪 افحص iptables
+sudo iptables -L ULTRA_SHIELD -v -n
+
+8. 🔁 تشغيل دائم عند إعادة التشغيل
+استخدم pm2 أو systemd</code></pre>
+
+    <h3>🎬 فيديو توضيحي</h3>
+    <iframe width="100%" height="450" src="https://www.youtube.com/embed/4F59agJON-E" allowfullscreen></iframe>
+
+    <div class="uptime-status">
+      🔄 <strong>Live Server Uptime:</strong><br>
+      <span>✅ All nodes are operational - Last check: <script>document.write(new Date().toLocaleString())</script></span>
     </div>
+
+    <h2>💼 About IronWall</h2>
+    <p>IronWall is a Tunisian company specializing in updating and enhancing the security of your servers. We focus on identifying and fixing all technical vulnerabilities to protect your digital infrastructure against evolving threats. With IronWall, your servers gain robust defense mechanisms.</p>
+
+    <div class="additional">
+      <h3>⚙️ Features</h3>
+      <ul>
+        <li>✅ Smart AI packet analysis</li>
+        <li>✅ Advanced iptables filtering rules</li>
+        <li>✅ Layer 4 and 7 mitigation</li>
+        <li>✅ Lightweight CLI tools</li>
+        <li>✅ Auto start on reboot</li>
+        <li>✅ Dynamic blacklist with timeout</li>
+        <li>✅ Manual and auto installer available</li>
+      </ul>
+    </div>
+
+    <div class="contact">
+      <h3>📬 Contact Us</h3>
+      <p><strong>Email:</strong> bensaidyoussef155@gmail.com</p>
+      <p><strong>Telegram:</strong> <a href="https://t.me/IronWallHosting" target="_blank">@IronWallHosting</a></p>
+      <p><strong>Discord:</strong> <a href="https://discord.gg/wkFvw4ZFG7" target="_blank">IronWall Community</a></p>
+    </div>
+  </main>
+  <footer>
+    📢 Join us on Discord: <a href="https://discord.gg/wkFvw4ZFG7" target="_blank">IronWall Community</a>
+  </footer>
 </body>
 </html>
-
